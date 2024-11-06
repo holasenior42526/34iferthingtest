@@ -114,7 +114,6 @@ local function applyPhysics(Character)
 		})
 	end
 end
-
 local physicsRender = function(dt)
 	for Index, Data in next, PhysicsList do
 
@@ -141,13 +140,14 @@ local physicsRender = function(dt)
 			for name, part in pairs(PhysicParts) do
 				local PartInstance = Morph:FindFirstChild(name,true)
 				if PartInstance == nil then continue end
-				local Joint = PartInstance:GetJoints()
-				for index, item in pairs(Joint) do
-					if item.Part1 == PartInstance then
+				local Joint = nil
+				for _, item in pairs(PartInstance:GetJoints()) do
+					if (item:IsA("Weld") or item:IsA("Motor6D")) and item.Part1 == PartInstance then
 						Joint = item
-						continue
+						break
 					end
 				end
+				if Joint == nil then continue end
 				if part.Axis == nil then part.Axis = {"Z","X","Y"} end
 				Information[name] = {
 					Last 											= tick(),
